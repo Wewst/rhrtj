@@ -3770,11 +3770,6 @@
 
     <!-- Дождь -->
     <div class="rain"></div>
-
-<button onclick="checkLocalStorage()" 
-        style="position: fixed; bottom: 10px; right: 10px; z-index: 10000; padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px;">
-    Проверить данные
-</button>
     
     <!-- Карусель -->
     <div class="carousel" id="carousel">
@@ -8974,33 +8969,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
 })();
-
-function showDebugMessage(message, isError = false) {
-    let debugElement = document.getElementById('debug-messages');
-    
-    if (!debugElement) {
-        debugElement = document.createElement('div');
-        debugElement.id = 'debug-messages';
-        debugElement.style.position = 'fixed';
-        debugElement.style.top = '10px';
-        debugElement.style.right = '10px';
-        debugElement.style.background = isError ? '#ff4444' : '#44ff44';
-        debugElement.style.color = 'white';
-        debugElement.style.padding = '10px';
-        debugElement.style.borderRadius = '5px';
-        debugElement.style.zIndex = '10000';
-        debugElement.style.maxWidth = '300px';
-        debugElement.style.fontSize = '14px';
-        document.body.appendChild(debugElement);
-    }
-    
-    debugElement.textContent = message;
-    debugElement.style.display = 'block';
-    
-    setTimeout(function() {
-        debugElement.style.display = 'none';
-    }, 3000);
-}
 </script>
 
 </body>

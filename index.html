@@ -4427,182 +4427,222 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <script>
-// Инициализация данных пользователя Telegram
-async function initUserData() {
-  console.log("🔍 initUserData function called");
-  
-  // Проверяем, что WebApp Telegram доступен
-  if (window.Telegram && Telegram.WebApp) {
-    console.log("✅ Telegram WebApp detected");
+// Инициализация данных пользователя Telegram 
+async function initUserData() { 
+    console.log("🔍 initUserData function called");
     
-    // Инициализируем WebApp
-    Telegram.WebApp.ready();
-    Telegram.WebApp.expand();
-    
-    // Получаем данные пользователя
-    const user = Telegram.WebApp.initDataUnsafe?.user;
-    console.log("📋 User data from Telegram:", user);
-    
-    if (user) {
-      console.log("👤 User found, processing...");
-      
-      // Устанавливаем имя пользователя
-      const username = user.first_name || user.username || 'Пират';
-      document.getElementById('username').textContent = username;
-      document.getElementById('profile-username').textContent = username;
-      
-      // Устанавливаем аватар
-      const avatarUrl = user.photo_url;
-      const avatarElement = document.getElementById('avatar');
-      const profileAvatarElement = document.getElementById('profile-avatar-img');
-      
-      if (avatarUrl) {
-        avatarElement.style.backgroundImage = `url(${avatarUrl})`;
-        avatarElement.style.backgroundSize = 'cover';
-        profileAvatarElement.style.backgroundImage = `url(${avatarUrl})`;
-        profileAvatarElement.style.backgroundSize = 'cover';
-      } else {
-        // Дефолтный аватар
-        const defaultAvatarColor = `hsl(${Math.floor(Math.random() * 360)}, 70%, 50%)`;
-        avatarElement.innerHTML = 
-          `<svg width="140" height="140" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="70" cy="70" r="70" fill="${defaultAvatarColor}"/>
-            <text x="70" y="80" font-family="Arial" font-size="60" fill="white" text-anchor="middle" dominant-baseline="middle">
-              ${username.charAt(0).toUpperCase()}
-            </text>
-          </svg>`;
+    // Проверяем, что WebApp Telegram доступен 
+    if (window.Telegram && Telegram.WebApp) { 
+        console.log("✅ Telegram WebApp detected");
         
-        profileAvatarElement.innerHTML = 
-          `<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="30" cy="30" r="30" fill="${defaultAvatarColor}"/>
-            <text x="30" y="35" font-family="Arial" font-size="30" fill="white" text-anchor="middle" dominant-baseline="middle">
-              ${username.charAt(0).toUpperCase()}
-            </text>
-          </svg>`;
-      }
-      
-      // Устанавливаем дату присоединения
-      const joinDate = new Date();
-      document.getElementById('join-date').textContent = joinDate.toLocaleDateString('ru-RU');
-      
-      // Устанавливаем номер профиля
-      document.getElementById('profile-number').textContent = String(user.id).slice(-4);
-      
-      // Настраиваем кнопку "Назад" в Telegram
-      if (Telegram.WebApp.BackButton) {
-        Telegram.WebApp.BackButton.show();
-        Telegram.WebApp.BackButton.onClick(handleBackButton);
-      }
-      
-      // 🔥 СОХРАНЯЕМ ДАННЫЕ В LOCALSTORAGE (НАШ "БЭКЕНД")
-      console.log("💾 Saving to localStorage backend");
-      saveToBackend(user);
-      
-    } else {
-      console.log("No user data available");
-      setupDemoData();
+        // Инициализируем WebApp
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
+        
+        // Получаем данные пользователя
+        const user = Telegram.WebApp.initDataUnsafe?.user;
+        
+        if (user) {
+            console.log("👤 User found:", user);
+            
+            // Устанавливаем имя пользователя
+            const username = user.first_name || user.username || 'Пират';
+            document.getElementById('username').textContent = username;
+            document.getElementById('profile-username').textContent = username;
+            
+            // Устанавливаем аватар
+            const avatarUrl = user.photo_url;
+            const avatarElement = document.getElementById('avatar');
+            const profileAvatarElement = document.getElementById('profile-avatar-img');
+            
+            if (avatarUrl) {
+                avatarElement.style.backgroundImage = `url(${avatarUrl})`;
+                avatarElement.style.backgroundSize = 'cover';
+                profileAvatarElement.style.backgroundImage = `url(${avatarUrl})`;
+                profileAvatarElement.style.backgroundSize = 'cover';
+            } else {
+                // Дефолтный аватар
+                const defaultAvatarColor = `hsl(${Math.floor(Math.random() * 360)}, 70%, 50%)`;
+                avatarElement.innerHTML = 
+                    `<svg width="140" height="140" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="70" cy="70" r="70" fill="${defaultAvatarColor}"/>
+                        <text x="70" y="80" font-family="Arial" font-size="60" fill="white" text-anchor="middle" dominant-baseline="middle">
+                            ${username.charAt(0).toUpperCase()}
+                        </text>
+                    </svg>`;
+                
+                profileAvatarElement.innerHTML = 
+                    `<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="30" cy="30" r="30" fill="${defaultAvatarColor}"/>
+                        <text x="30" y="35" font-family="Arial" font-size="30" fill="white" text-anchor="middle" dominant-baseline="middle">
+                            ${username.charAt(0).toUpperCase()}
+                        </text>
+                    </svg>`;
+            }
+            
+            // Устанавливаем дату присоединения
+            const joinDate = new Date();
+            document.getElementById('join-date').textContent = joinDate.toLocaleDateString('ru-RU');
+            
+            // Устанавливаем номер профиля
+            document.getElementById('profile-number').textContent = String(user.id).slice(-4);
+            
+            // Настраиваем кнопку "Назад" в Telegram
+            if (Telegram.WebApp.BackButton) {
+                Telegram.WebApp.BackButton.show();
+                Telegram.WebApp.BackButton.onClick(handleBackButton);
+            }
+            
+            // Сохраняем в бэкенд
+            saveToBackend(user);
+            
+        } else {
+            console.log("No user data available");
+            setupDemoData();
+        }
+        
+    } else { 
+        console.log("Not in Telegram WebApp, using demo data"); 
+        setupDemoData(); 
     }
-  } else {
-    console.log("Not in Telegram WebApp, using demo data");
-    setupDemoData();
-  }
-
-  // Загрузка сохраненного баланса
-  loadBalanceFromBackend();
+    
+    // Загрузка сохраненного баланса 
+    loadBalanceFromBackend(); 
 }
 
-// 🔥 НАШ "БЭКЕНД" В LOCALSTORAGE
-function saveToBackend(user) {
-  try {
-    // Сохраняем пользователя
-    const userData = {
-      id: user.id,
-      telegramId: user.id,
-      username: user.username || '',
-      firstName: user.first_name || '',
-      lastName: user.last_name || '',
-      balance: 0,
-      joinDate: new Date().toISOString(),
-      avatarUrl: user.photo_url || null
-    };
-    
-    // Сохраняем в localStorage
-    localStorage.setItem('backend_user', JSON.stringify(userData));
-    localStorage.setItem('backendUserId', user.id);
-    
-    console.log("✅ Saved to backend:", userData);
-    
-  } catch (error) {
-    console.log("❌ Backend save error:", error);
-  }
+// 🔥 НАШ "БЭКЕНД" В LOCALSTORAGE 
+function saveToBackend(user){ 
+    try { 
+        // Сохраняем пользователя 
+        const userData = { 
+            id: user.id, 
+            telegramId: user.id, 
+            username: user.username || '', 
+            firstName: user.first_name || '', 
+            lastName: user.last_name || '', 
+            balance: 0, 
+            joinDate: new Date().toISOString(), 
+            avatarUrl: user.photo_url || null 
+        };
+        
+        // Сохраняем в localStorage
+        localStorage.setItem('backend_user', JSON.stringify(userData));
+        localStorage.setItem('backendUserId', user.id.toString());
+        
+        console.log("✅ Saved to backend:", userData);
+        
+    } catch (error) { 
+        console.log("❌ Backend save error:", error); 
+    } 
 }
 
-// 🔥 ЗАГРУЗКА БАЛАНСА ИЗ "БЭКЕНДА"
-function loadBalanceFromBackend() {
-  try {
-    const userData = JSON.parse(localStorage.getItem('backend_user') || '{}');
-    const balance = userData.balance || 0;
+// 🔥 ЗАГРУЗКА БАЛАНСА ИЗ "БЭКЕНДА" 
+function loadBalanceFromBackend(){ 
+    try { 
+        const userData = JSON.parse(localStorage.getItem('backend_user') || '{}'); 
+        const balance = userData.balance || 0;
+        
+        document.getElementById('balance').textContent = balance;
+        localStorage.setItem('userBalance', balance.toString());
+        
+        console.log("💰 Balance loaded:", balance);
+        
+    } catch (error) { 
+        console.log("❌ Balance load error:", error); 
+        document.getElementById('balance').textContent = '0'; 
+    } 
+}
+
+// 🔥 ФУНКЦИЯ ДОБАВЛЕНИЯ В КОРЗИНУ (С "БЭКЕНДОМ") 
+function addToCart(productId){ 
+    const product = productsData.find(p => p.id === productId);
     
-    document.getElementById('balance').textContent = balance;
-    localStorage.setItem('userBalance', balance.toString());
+    if (product) { 
+        // Добавляем товар в склад 
+        addToStorageCart(product);
+        
+        // Сохраняем в бэкенд
+        saveCartToBackend(product);
+        
+        showToast('Товар добавлен в склад!');
+        triggerVibration();
+        updateCartIconCount();
+    } 
+}
+
+// 🔥 СОХРАНЕНИЕ КОРЗИНЫ В "БЭКЕНД" 
+function saveCartToBackend(product){ 
+    try { 
+        // Получаем текущую корзину 
+        const currentCart = JSON.parse(localStorage.getItem('backend_cart') || '[]');
+        
+        // Добавляем товар
+        const cartItem = {
+            id: product.id,
+            name: product.title,
+            price: product.price,
+            quantity: 1,
+            image: product.image,
+            addedAt: new Date().toISOString()
+        };
+        
+        currentCart.push(cartItem);
+        
+        // Сохраняем обратно
+        localStorage.setItem('backend_cart', JSON.stringify(currentCart));
+        
+        console.log("🛒 Cart saved to backend:", cartItem);
+        
+    } catch (error) { 
+        console.log("❌ Cart save error:", error); 
+    } 
+}
+
+// Функция для демо данных
+function setupDemoData() {
+    console.log("🔄 Setting up demo data");
     
-    console.log("💰 Balance loaded:", balance);
+    const username = "Капитан Джек";
+    document.getElementById('username').textContent = username;
+    document.getElementById('profile-username').textContent = username;
     
-  } catch (error) {
-    console.log("❌ Balance load error:", error);
+    const avatarElement = document.getElementById('avatar');
+    const profileAvatarElement = document.getElementById('profile-avatar-img');
+    
+    const defaultAvatarColor = "#2E2E2E";
+    
+    avatarElement.innerHTML = 
+        `<svg width="140" height="140" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="70" cy="70" r="70" fill="${defaultAvatarColor}"/>
+            <text x="70" y="80" font-family="Arial" font-size="60" fill="white" text-anchor="middle" dominant-baseline="middle">К</text>
+        </svg>`;
+    
+    profileAvatarElement.innerHTML = 
+        `<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="30" cy="30" r="30" fill="${defaultAvatarColor}"/>
+            <text x="30" y="35" font-family="Arial" font-size="30" fill="white" text-anchor="middle" dominant-baseline="middle">К</text>
+        </svg>`;
+        
+    // Устанавливаем демо дату и номер
+    document.getElementById('join-date').textContent = new Date().toLocaleDateString('ru-RU');
+    document.getElementById('profile-number').textContent = '1234';
     document.getElementById('balance').textContent = '0';
-  }
+    
+    // Сохраняем демо данные в "бэкенд"
+    localStorage.setItem('backend_user', JSON.stringify({
+        id: 1234,
+        username: 'demo_user',
+        firstName: 'Капитан',
+        lastName: 'Джек',
+        balance: 0,
+        joinDate: new Date().toISOString()
+    }));
 }
 
-// 🔥 ФУНКЦИЯ ДОБАВЛЕНИЯ В КОРЗИНУ (С "БЭКЕНДОМ")
-function addToCart(productId) {
-  const product = productsData.find(p => p.id === productId);
-  
-  if (product) {
-    // Добавляем товар в склад
-    addToStorageCart(product);
-    
-    // Сохраняем в наш "бэкенд"
-    saveCartToBackend(product);
-    
-    showToast('Товар добавлен в склад!');
-    triggerVibration();
-    updateCartIconCount();
-  }
-}
-
-// 🔥 СОХРАНЕНИЕ КОРЗИНЫ В "БЭКЕНД"
-function saveCartToBackend(product) {
-  try {
-    // Получаем текущую корзину
-    const currentCart = JSON.parse(localStorage.getItem('backend_cart') || '[]');
-    
-    // Добавляем товар
-    const cartItem = {
-      id: product.id,
-      name: product.title,
-      price: product.price,
-      quantity: 1,
-      image: product.image,
-      addedAt: new Date().toISOString()
-    };
-    
-    currentCart.push(cartItem);
-    
-    // Сохраняем обратно
-    localStorage.setItem('backend_cart', JSON.stringify(currentCart));
-    
-    console.log("🛒 Cart saved to backend:", cartItem);
-    
-  } catch (error) {
-    console.log("❌ Cart save error:", error);
-  }
-}
-  
-// Вызываем инициализацию при загрузке
-document.addEventListener('DOMContentLoaded', function() {
-  console.log("🚀 DOM loaded, initializing...");
-  initUserData();
+// Вызываем инициализацию при загрузке 
+document.addEventListener('DOMContentLoaded', function() { 
+    console.log("🚀 DOM loaded, initializing..."); 
+    initUserData(); 
   
   // Инициализация свайпов
   initSwipeHandlers();
@@ -8930,7 +8970,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
 })();
 
-
+function showDebugMessage(message, isError = false) {
+    let debugElement = document.getElementById('debug-messages');
+    
+    if (!debugElement) {
+        debugElement = document.createElement('div');
+        debugElement.id = 'debug-messages';
+        debugElement.style.position = 'fixed';
+        debugElement.style.top = '10px';
+        debugElement.style.right = '10px';
+        debugElement.style.background = isError ? '#ff4444' : '#44ff44';
+        debugElement.style.color = 'white';
+        debugElement.style.padding = '10px';
+        debugElement.style.borderRadius = '5px';
+        debugElement.style.zIndex = '10000';
+        debugElement.style.maxWidth = '300px';
+        debugElement.style.fontSize = '14px';
+        document.body.appendChild(debugElement);
+    }
+    
+    debugElement.textContent = message;
+    debugElement.style.display = 'block';
+    
+    setTimeout(function() {
+        debugElement.style.display = 'none';
+    }, 3000);
+}
 </script>
 
 </body>
